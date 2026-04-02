@@ -424,7 +424,7 @@ class CouncilRunner:
             "projected_available_output_tokens": 0,
             "requested_output_cap": TECHNICAL_AUDITOR_MAX_TOKENS,
             "minimum_required_output_tokens": NEMOTRON_MIN_OUTPUT_TOKENS,
-            "external_evidence_roots": [item["root"] for item in external_evidence_checks if item["source_group"] == "mos_app"],
+            "external_evidence_roots": [item["root"] for item in external_evidence_checks],
         }
         if not missing_paths:
             bundle = build_bundle(manifest)
@@ -455,12 +455,13 @@ class CouncilRunner:
                 "minimum_required_output_tokens": NEMOTRON_MIN_OUTPUT_TOKENS,
                 "external_evidence_roots": [],
             }
+            ext_source_groups = tuple(item["source_group"] for item in external_evidence_checks)
             technical_info = self._build_filtered_corpus(
                 bundle,
                 include_text=True,
-                source_groups=("manuscript", "dataset", "code", "mos_app"),
+                source_groups=("manuscript", "dataset", "code", "mos_app") + ext_source_groups,
             )
-            technical_roots = [item["root"] for item in external_evidence_checks if item["source_group"] == "mos_app"]
+            technical_roots = [item["root"] for item in external_evidence_checks]
             technical_budget = self._nvidia_request_budget(
                 self._technical_auditor_prompt(
                     manifest,
@@ -1273,10 +1274,11 @@ Focus on concrete inconsistencies that could break replication or invalidate rep
         return self._build_logic_judge_whole_paper(manifest, bundle, context_king)
 
     def _build_technical_auditor_whole_paper(self, manifest: ReviewManifest, bundle: Dict[str, Any], context_king: Dict[str, Any]) -> Dict[str, Any]:
+        external_source_groups = tuple(spec.source_group for spec in manifest.external_evidence)
         corpus = self._build_filtered_corpus(
             bundle,
             include_text=True,
-            source_groups=("manuscript", "dataset", "code", "mos_app"),
+            source_groups=("manuscript", "dataset", "code", "mos_app") + external_source_groups,
         )
         schema = {
             "section_summary": "",
@@ -1286,7 +1288,7 @@ Focus on concrete inconsistencies that could break replication or invalidate rep
             "code_result_mismatches": [""],
             "priority_fixes": [{"location": "", "issue": "", "instruction": ""}],
         }
-        external_roots = [str(spec.root) for spec in manifest.external_evidence if spec.source_group == "mos_app"]
+        external_roots = [str(spec.root) for spec in manifest.external_evidence]
         prompt = self._technical_auditor_prompt(manifest, context_king, corpus, external_roots)
         budget = self._require_nvidia_request_budget(
             role="technical_auditor",

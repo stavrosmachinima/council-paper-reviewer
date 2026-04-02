@@ -234,26 +234,26 @@ class FakeStyleAlwaysFailsRouter(FakeRouter):
         return super().call(request)
 
 
-def write_manifest(path: Path, repo: Path, mos_repo: Path | None = None) -> Path:
+def write_manifest(path: Path, repo: Path, eval_app: Path | None = None) -> Path:
     payload = {
         "target_repo": str(repo),
         "web_research_mode": "hybrid",
         "external_evidence": [],
     }
-    if mos_repo is not None:
+    if eval_app is not None:
         payload["external_evidence"] = [
             {
-                "name": "audiorate",
-                "root": str(mos_repo),
+                "name": "eval_app",
+                "root": str(eval_app),
                 "include_paths": [
                     "README.md",
-                    "audiorate/public/views.py",
-                    "audiorate/public/models.py",
-                    "audiorate/public/forms.py",
-                    "audiorate/templates/public/home.html",
+                    "app/public/views.py",
+                    "app/public/models.py",
+                    "app/public/forms.py",
+                    "app/templates/public/home.html",
                     "assets/js/script.js",
-                    "audiorate/data/models.json",
-                    "audiorate/data/samples.json",
+                    "app/data/models.json",
+                    "app/data/samples.json",
                 ],
                 "include_globs": [],
                 "exclude_globs": [
@@ -266,7 +266,7 @@ def write_manifest(path: Path, repo: Path, mos_repo: Path | None = None) -> Path
                     "__pycache__/**",
                     "*.pyc",
                 ],
-                "source_group": "mos_app",
+                "source_group": "external_app",
             }
         ]
     path.write_text(json.dumps(payload), encoding="utf-8")
@@ -274,7 +274,7 @@ def write_manifest(path: Path, repo: Path, mos_repo: Path | None = None) -> Path
 
 
 def prepare_repo(tmp_path: Path, *, with_mos_repo: bool = True) -> tuple[Path, Path | None]:
-    repo = tmp_path / "elsevier"
+    repo = tmp_path / "paper_repo"
     (repo / "paper").mkdir(parents=True)
     (repo / "papers").mkdir()
     (repo / "data").mkdir()
@@ -287,33 +287,33 @@ def prepare_repo(tmp_path: Path, *, with_mos_repo: bool = True) -> tuple[Path, P
     (repo / "paper" / "references.bib").write_text("@article{ref,title={Ref}}\n", encoding="utf-8")
     (repo / "README.md").write_text("README", encoding="utf-8")
     (repo / "CLAUDE.md").write_text("CLAUDE", encoding="utf-8")
-    (repo / "data" / "mos_summary_by_model.csv").write_text("model,mos\nfs2,3.1\n", encoding="utf-8")
-    (repo / "scripts" / "compute_enhanced_stats.py").write_text("print('stats')\n", encoding="utf-8")
+    (repo / "data" / "results_summary.csv").write_text("model,score\nA,3.1\n", encoding="utf-8")
+    (repo / "scripts" / "compute_stats.py").write_text("print('stats')\n", encoding="utf-8")
     create_pdf(repo / "papers" / "reference.pdf", "Reference")
-    create_pdf(repo / "elsevier_guide.pdf", "Guide")
+    create_pdf(repo / "guide.pdf", "Guide")
 
     if not with_mos_repo:
         return repo, None
 
-    mos_repo = tmp_path / "audiorate"
-    (mos_repo / "audiorate" / "public").mkdir(parents=True)
-    (mos_repo / "audiorate" / "templates" / "public").mkdir(parents=True)
-    (mos_repo / "audiorate" / "data").mkdir(parents=True)
-    (mos_repo / "assets" / "js").mkdir(parents=True)
-    (mos_repo / "README.md").write_text("AudioRate", encoding="utf-8")
-    (mos_repo / "audiorate" / "public" / "views.py").write_text("print('mos')\n", encoding="utf-8")
-    (mos_repo / "audiorate" / "public" / "models.py").write_text("print('models')\n", encoding="utf-8")
-    (mos_repo / "audiorate" / "public" / "forms.py").write_text("print('forms')\n", encoding="utf-8")
-    (mos_repo / "audiorate" / "templates" / "public" / "home.html").write_text("<html>rate</html>\n", encoding="utf-8")
-    (mos_repo / "assets" / "js" / "script.js").write_text("console.log('ui')\n", encoding="utf-8")
-    (mos_repo / "audiorate" / "data" / "models.json").write_text("{\"models\": []}\n", encoding="utf-8")
-    (mos_repo / "audiorate" / "data" / "samples.json").write_text("{\"samples\": []}\n", encoding="utf-8")
-    return repo, mos_repo
+    eval_app = tmp_path / "eval_app"
+    (eval_app / "app" / "public").mkdir(parents=True)
+    (eval_app / "app" / "templates" / "public").mkdir(parents=True)
+    (eval_app / "app" / "data").mkdir(parents=True)
+    (eval_app / "assets" / "js").mkdir(parents=True)
+    (eval_app / "README.md").write_text("External app", encoding="utf-8")
+    (eval_app / "app" / "public" / "views.py").write_text("print('views')\n", encoding="utf-8")
+    (eval_app / "app" / "public" / "models.py").write_text("print('models')\n", encoding="utf-8")
+    (eval_app / "app" / "public" / "forms.py").write_text("print('forms')\n", encoding="utf-8")
+    (eval_app / "app" / "templates" / "public" / "home.html").write_text("<html></html>\n", encoding="utf-8")
+    (eval_app / "assets" / "js" / "script.js").write_text("console.log('ui')\n", encoding="utf-8")
+    (eval_app / "app" / "data" / "models.json").write_text("{\"models\": []}\n", encoding="utf-8")
+    (eval_app / "app" / "data" / "samples.json").write_text("{\"samples\": []}\n", encoding="utf-8")
+    return repo, eval_app
 
 
 def test_council_runner_writes_minimal_artifacts_and_whole_paper_outputs(tmp_path: Path) -> None:
-    repo, mos_repo = prepare_repo(tmp_path, with_mos_repo=True)
-    manifest_path = write_manifest(tmp_path / "manifest.json", repo, mos_repo)
+    repo, eval_app = prepare_repo(tmp_path, with_mos_repo=True)
+    manifest_path = write_manifest(tmp_path / "manifest.json", repo, eval_app)
 
     runner = CouncilRunner(router=FakeRouter())
     result = runner.run(manifest_path)
@@ -360,7 +360,7 @@ def test_council_runner_writes_minimal_artifacts_and_whole_paper_outputs(tmp_pat
     assert technical_auditor["review_mode"] == "whole_paper"
     assert len(technical_auditor["section_passes"]) == 1
     assert technical_auditor["section_passes"][0]["pass_name"] == "whole_paper"
-    assert str(mos_repo) in technical_auditor["external_evidence_roots"]
+    assert str(eval_app) in technical_auditor["external_evidence_roots"]
 
 
 def test_council_runner_writes_debug_artifacts_when_json_repair_fails(tmp_path: Path) -> None:
@@ -401,9 +401,9 @@ def test_council_runner_writes_debug_artifact_for_provider_request_failures(tmp_
 
 
 def test_embed_failures_only_degrade_problem_chunks(tmp_path: Path) -> None:
-    repo, mos_repo = prepare_repo(tmp_path, with_mos_repo=True)
-    (mos_repo / "audiorate" / "public" / "views.py").write_text("TRIGGER_EMBED_400 " * 2000, encoding="utf-8")
-    manifest_path = write_manifest(tmp_path / "manifest.json", repo, mos_repo)
+    repo, eval_app = prepare_repo(tmp_path, with_mos_repo=True)
+    (eval_app / "app" / "public" / "views.py").write_text("TRIGGER_EMBED_400 " * 2000, encoding="utf-8")
+    manifest_path = write_manifest(tmp_path / "manifest.json", repo, eval_app)
 
     router = FakePartialEmbedRouter()
     runner = CouncilRunner(router=router)
@@ -434,8 +434,8 @@ def test_budget_overflow_fails_before_nvidia_request(tmp_path: Path) -> None:
 
 
 def test_style_scribe_retries_same_model_then_fallback_model(tmp_path: Path) -> None:
-    repo, mos_repo = prepare_repo(tmp_path, with_mos_repo=True)
-    manifest_path = write_manifest(tmp_path / "manifest.json", repo, mos_repo)
+    repo, eval_app = prepare_repo(tmp_path, with_mos_repo=True)
+    manifest_path = write_manifest(tmp_path / "manifest.json", repo, eval_app)
 
     router = FakeStyleRetryRouter()
     runner = CouncilRunner(router=router)
@@ -456,8 +456,8 @@ def test_style_scribe_retries_same_model_then_fallback_model(tmp_path: Path) -> 
 
 
 def test_style_scribe_all_failures_do_not_abort_run(tmp_path: Path) -> None:
-    repo, mos_repo = prepare_repo(tmp_path, with_mos_repo=True)
-    manifest_path = write_manifest(tmp_path / "manifest.json", repo, mos_repo)
+    repo, eval_app = prepare_repo(tmp_path, with_mos_repo=True)
+    manifest_path = write_manifest(tmp_path / "manifest.json", repo, eval_app)
 
     runner = CouncilRunner(router=FakeStyleAlwaysFailsRouter())
     result = runner.run(manifest_path)
