@@ -1,0 +1,27 @@
+{
+  "target_repo": "/path/to/your/paper/repo",
+  "manuscript_tex": "paper/main.tex",
+  "manuscript_pdf": "paper/main.pdf",
+  "bibliography": "paper/references.bib",
+  "reference_pdfs_glob": "papers/*.pdf",
+  "journal_guide_pdf": "guide.pdf",
+  "target_journal": "Your Target Journal Name",
+  "review_focus": [
+    "technical accuracy",
+    "statistics",
+    "narrative flow",
+    "journal fit"
+  ],
+  "web_research_mode": "hybrid",
+  "architect_target_files": [
+    "paper/main.tex"
+  ],
+  "external_evidence": [],
+  "domain_calibration": {},
+  "provider_overrides": {},
+  "strict_red_team": true,
+  "report_formats": [
+    "json",
+    "md"
+  ]
+}

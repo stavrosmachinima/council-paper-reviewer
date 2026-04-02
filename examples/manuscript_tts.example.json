@@ -1,0 +1,88 @@
+{
+  "_comment": "Full example manifest for a TTS comparative study. Copy to Agent1_Peer_Review/manuscript.json and fill in your paths.",
+  "target_repo": "/path/to/your/tts/paper/repo",
+  "manuscript_tex": "paper/main.tex",
+  "manuscript_pdf": "paper/main.pdf",
+  "bibliography": "paper/references.bib",
+  "reference_pdfs_glob": "papers/*.pdf",
+  "journal_guide_pdf": "guide.pdf",
+  "target_journal": "Your Target Journal",
+  "review_focus": [
+    "technical accuracy",
+    "statistics",
+    "narrative flow",
+    "journal fit"
+  ],
+  "web_research_mode": "hybrid",
+  "architect_target_files": [
+    "paper/main.tex"
+  ],
+  "external_evidence": [
+    {
+      "name": "mos_app",
+      "root": "/path/to/your/mos/evaluation/app",
+      "include_paths": [
+        "README.md"
+      ],
+      "include_globs": [
+        "**/*.py",
+        "**/*.html",
+        "**/*.js"
+      ],
+      "exclude_globs": [
+        ".git/**",
+        "node_modules/**",
+        ".env",
+        ".env.*",
+        "__pycache__/**",
+        "*.pyc",
+        "build/**",
+        "dist/**"
+      ],
+      "source_group": "mos_app"
+    }
+  ],
+  "domain_calibration": {
+    "domain_label": "speech synthesis / TTS comparative study",
+    "context_king_calibration": "DOMAIN CALIBRATION — This is a speech synthesis / TTS comparative study. Apply these rules:\n- In comparative TTS studies, different models are often paired with different dataset variants (e.g., cleaned vs. augmented). This is standard practice (dataset-model matching), NOT a confound, UNLESS the authors fail to acknowledge it as a limitation.\n- 'Shared hardware constraints' means all models trained on the same GPU, NOT that they share training data.\n- MOS effect sizes in TTS are typically small (Cohen's d < 0.3). Do NOT flag small effects as a weakness if the authors explicitly report and contextualize them.\n- Before flagging any methodological issue, CHECK whether the paper's own Threats to Validity or Limitations section already acknowledges it. If acknowledged, note it as 'author-acknowledged' rather than a novel finding.",
+    "web_research_search_focus": "Look for recent non-autoregressive TTS comparative studies, new vocoder benchmarks, updated MOS evaluation methodologies, and any {target_journal} editorial guidance on speech synthesis submissions. Flag only gaps where a missing reference would weaken the paper's positioning.",
+    "logic_judge_calibration": [
+      "In TTS comparisons, different dataset-model pairings can be justified design choices; only flag them when the paper hides or misstates the tradeoff.",
+      "Small MOS effects are normal in TTS. Flag overclaiming, not merely small effect sizes."
+    ],
+    "technical_auditor_calibration": [
+      "Shared vocoders or model-specific preprocessing choices are not automatically errors if the paper documents the tradeoff.",
+      "Treat the MOS web app as evaluation evidence: verify the interface and flow against what the manuscript claims."
+    ],
+    "style_targets": [
+      "Flag hedging language that weakens otherwise well-supported claims ('seems to suggest', 'might indicate').",
+      "Flag AI-residue phrases: 'delve into', 'it is worth noting that', 'in the realm of', 'leverage', 'holistic', 'paradigm shift'.",
+      "{target_journal} expects precise technical writing; prefer short, concrete rewrite advice."
+    ],
+    "retrieval_queries": {
+      "logic_judge": [
+        "statistical tests ANOVA Welch Kruskal-Wallis effect size Cohen eta-squared",
+        "MOS evaluation methodology listeners raters inter-rater reliability",
+        "dataset model matching training data confound design choice threats validity",
+        "results claims causal inference overclaiming counter argument"
+      ],
+      "technical_auditor": [
+        "mel spectrogram vocoder preprocessing pipeline hyperparameters",
+        "training configuration learning rate batch size epochs checkpoint",
+        "MOS web application listening test evaluation protocol rater screening",
+        "reproducibility code scripts data split phoneme coverage"
+      ],
+      "style_scribe": [
+        "ai sounding transitions prose cleanup academic tone hedging",
+        "latex citation bibtex overfull hbox missing doi broken citation",
+        "narrative flow wall of text subheadings figures table placement"
+      ]
+    }
+  },
+  "provider_overrides": {},
+  "strict_red_team": true,
+  "report_formats": [
+    "json",
+    "md"
+  ]
+}

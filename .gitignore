@@ -1,0 +1,40 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Council outputs
+Agent1_Peer_Review/results/
+Agent1_Peer_Review/reports/
+
+# User-specific manuscript config (copy from manuscript.example.json)
+Agent1_Peer_Review/manuscript.json
+
+# Model documentation and vendor files
+Agent1_Peer_Review/nemotron_modelcard.txt
+
+# Tool and session files
+.codex
+for_claude_export_chat.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
