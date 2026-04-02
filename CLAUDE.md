@@ -12,31 +12,31 @@ Domain calibration is configurable via the `domain_calibration` field in `manusc
 
 ```bash
 # Install dependencies
-pip install -r Agent1_Peer_Review/requirements.txt
+pip install -r council_reviewer/requirements.txt
 
 # Run pre-flight diagnostics (no LLM calls)
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py --doctor-only
+cd council_reviewer && python3 run_local_aipeer_review.py --doctor-only
 
 # Run full review pipeline
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py
+cd council_reviewer && python3 run_local_aipeer_review.py
 
 # Run with verbose logging (debug output to stderr)
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py -v
+cd council_reviewer && python3 run_local_aipeer_review.py -v
 
 # Resume a failed run (skips completed agents, saves API costs)
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py --resume results/2026-03-28_17-10-51/
+cd council_reviewer && python3 run_local_aipeer_review.py --resume results/2026-03-28_17-10-51/
 
 # Run with custom manifest
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py --manifest /path/to/manuscript.json
+cd council_reviewer && python3 run_local_aipeer_review.py --manifest /path/to/manuscript.json
 
 # Run tests
-cd Agent1_Peer_Review && pytest
+cd council_reviewer && pytest
 
 # Run a single test file
-cd Agent1_Peer_Review && pytest tests/test_providers.py
+cd council_reviewer && pytest tests/test_providers.py
 
 # Run a single test
-cd Agent1_Peer_Review && pytest tests/test_providers.py::test_function_name -v
+cd council_reviewer && pytest tests/test_providers.py::test_function_name -v
 ```
 
 ## Architecture

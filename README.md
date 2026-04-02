@@ -16,35 +16,35 @@ Multi-agent adversarial peer review system for academic manuscripts. Orchestrate
 
 ```bash
 # 1. Install dependencies
-pip install -r Agent1_Peer_Review/requirements.txt
+pip install -r council_reviewer/requirements.txt
 
 # 2. Configure API keys
 cp .env.example .env
 # Edit .env — fill in GEMINI_API_KEY and NVIDIA_API_KEY
 
 # 3. Configure your manuscript
-cp Agent1_Peer_Review/manuscript.example.json Agent1_Peer_Review/manuscript.json
+cp council_reviewer/manuscript.example.json council_reviewer/manuscript.json
 # Edit manuscript.json — set target_repo, target_journal, and paths
 
 # 4. Start Ollama with required models
 ollama pull qwen3:8b && ollama pull gemma3:4b && ollama pull nomic-embed-text
 
 # 5. Run pre-flight diagnostics (no LLM calls)
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py --doctor-only
+cd council_reviewer && python3 run_local_aipeer_review.py --doctor-only
 
 # 6. Run the full review
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py
+cd council_reviewer && python3 run_local_aipeer_review.py
 ```
 
 ## Domain Calibration
 
 The council prompts can be tuned for your research domain via a `domain_calibration` block in `manuscript.json`. This lets you inject domain-specific review rules — expected effect size ranges, methodology conventions, formatting targets — without touching Python.
 
-A working example for speech synthesis / TTS research is provided in `examples/manuscript_tts.example.json`. The calibration schema is documented in `Agent1_Peer_Review/README.md`.
+A working example for speech synthesis / TTS research is provided in `examples/manuscript_tts.example.json`. The calibration schema is documented in `council_reviewer/README.md`.
 
 ## Outputs
 
-All artifacts are written to `Agent1_Peer_Review/results/<timestamp>/`:
+All artifacts are written to `council_reviewer/results/<timestamp>/`:
 
 - `CRITIQUE_REPORT.md` — consolidated human-readable report
 - `ARCHITECT_PROMPT.md` — structured handoff prompt for a follow-up revision pass
@@ -53,14 +53,14 @@ All artifacts are written to `Agent1_Peer_Review/results/<timestamp>/`:
 ## Resume a Failed Run
 
 ```bash
-cd Agent1_Peer_Review && python3 run_local_aipeer_review.py --resume results/2026-03-28_17-10-51/
+cd council_reviewer && python3 run_local_aipeer_review.py --resume results/2026-03-28_17-10-51/
 ```
 
 Skips completed agents and reuses cached LLM responses — saves API costs on partial failures.
 
 ## Architecture
 
-See `Agent1_Peer_Review/README.md` for a detailed description of the pipeline, manifest fields, provider configuration, and the non-obvious design patterns (Gemini explicit caching, JSON repair loop, token budget guards).
+See `council_reviewer/README.md` for a detailed description of the pipeline, manifest fields, provider configuration, and the non-obvious design patterns (Gemini explicit caching, JSON repair loop, token budget guards).
 
 ## Requirements
 

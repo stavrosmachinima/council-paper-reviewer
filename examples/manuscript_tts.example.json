@@ -1,5 +1,5 @@
 {
-  "_comment": "Full example manifest for a TTS comparative study. Copy to Agent1_Peer_Review/manuscript.json and fill in your paths.",
+  "_comment": "Full example manifest for a TTS comparative study. Copy to council_reviewer/manuscript.json and fill in your paths.",
   "target_repo": "/path/to/your/tts/paper/repo",
   "manuscript_tex": "paper/main.tex",
   "manuscript_pdf": "paper/main.pdf",

@@ -1,6 +1,6 @@
-# Agent1 Peer Review
+# council_reviewer
 
-`Agent1_Peer_Review` is the 2026 adversarial audit runtime for this fork. It reviews a local manuscript repository, builds a retrieval-backed evidence bundle, routes work across multiple providers, and produces a pre-Architect critique package.
+`council_reviewer` is the 2026 adversarial audit runtime. It reviews a local manuscript repository, builds a retrieval-backed evidence bundle, routes work across multiple providers, and produces a pre-Architect critique package.
 
 ## Supported Workflow
 
