@@ -1,5 +1,9 @@
 # Council Paper Reviewer
 
+<p align="center">
+  <img src="assets/council.png" alt="Council Paper Reviewer" width="480">
+</p>
+
 Multi-agent adversarial peer review system for academic manuscripts. Orchestrates five specialized LLM agents across three providers — Google Gemini, NVIDIA Nemotron, and local Ollama — to audit a paper before human submission.
 
 ## The Council
