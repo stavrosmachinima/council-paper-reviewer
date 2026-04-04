@@ -71,4 +71,4 @@ See `council_reviewer/README.md` for a detailed description of the pipeline, man
 
 ## License
 
-MIT. Forked from [Agentic-Systems-Lab/rigorous](https://github.com/Agentic-Systems-Lab/rigorous).
+MIT. Built on concepts from [Agentic-Systems-Lab/rigorous](https://github.com/Agentic-Systems-Lab/rigorous).
