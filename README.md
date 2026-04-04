@@ -16,6 +16,24 @@ Multi-agent adversarial peer review system for academic manuscripts. Orchestrate
 | **Technical Auditor** | `nemotron-3-super-120b-a12b` | NVIDIA Nemotron | Code, math, and reproducibility checks. |
 | **Style Scribe** | `qwen3:8b` | Ollama (local) | Prose polish, LaTeX cleanup, AI-residue detection. |
 
+## Why not just paste the paper into three LLMs?
+
+You can — but you'll get polite, surface-level feedback. General-purpose LLMs asked to "review this paper" optimize for helpful-sounding output, not for breaking it.
+
+**What this system does differently:**
+
+- **Adversarial charters, not review requests.** The Logic Judge is not asked to review — it is prompted to *attack* the logical chain, hunt for overclaiming, and produce blockers. Specialized hostile framing produces qualitatively different findings than "please review."
+
+- **Evidence-backed retrieval.** The bundle system doesn't dump your whole paper at every agent. It retrieves the *relevant chunks per role* — statistics sections to the Logic Judge, equations to the Technical Auditor. Large papers especially benefit from this.
+
+- **Domain calibration cuts false positives.** A generic LLM will flag small effect sizes as a weakness. With calibration, the agent knows that's normal in your field and targets *overclaiming* instead — the actual problem. Generic reviews produce noise that wastes your time.
+
+- **Structured JSON output with locations.** Every finding includes a location, issue, and fix instruction. You can track what you fixed between runs. Browser-tab reviews give you prose you re-read manually.
+
+- **External evidence ingestion.** The Technical Auditor can read your companion repo — code, data scripts, evaluation app — alongside the paper, and check whether what you *claim* about your implementation matches what the code *does*. No chat session does this.
+
+- **Completeness guarantee.** The pipeline is fail-fast: you get a full audit or a clear failure, not three partial responses you have to manually synthesize.
+
 ## Quick Start
 
 ```bash
