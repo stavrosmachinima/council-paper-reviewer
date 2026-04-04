@@ -28,6 +28,7 @@ council_reviewer/nemotron_modelcard.txt
 # Tool and session files
 .codex
 for_claude_export_chat.txt
+CLAUDE.md
 
 # IDE
 .vscode/
